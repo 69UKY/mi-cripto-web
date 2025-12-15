@@ -134,6 +134,28 @@
 
     const galaxy = new THREE.Points(galaxyGeometry, galaxyMaterial);
     scene.add(galaxy);
+    // 🌟 NÚCLEO GALÁCTICO
+    const coreGeometry = new THREE.SphereGeometry(0.6, 32, 32);
+
+    const coreMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.9
+    });
+
+    const core = new THREE.Mesh(coreGeometry, coreMaterial);
+    scene.add(core);
+
+    // ✨ HALO BRILLANTE
+    const glowGeometry = new THREE.SphereGeometry(1.4, 32, 32);
+    const glowMaterial = new THREE.MeshBasicMaterial({
+      color: 0x88ccff,
+      transparent: true,
+      opacity: 0.25
+    });
+
+    const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+    scene.add(glow);
 
     // ESTRELLAS DE FONDO
     const bgGeometry = new THREE.BufferGeometry();
@@ -163,6 +185,10 @@
       backgroundStars.rotation.y += 0.0001;
 
       controls.update();
+      const pulse = 0.5 + Math.sin(Date.now() * 0.002) * 0.1;
+core.scale.set(pulse, pulse, pulse);
+glow.scale.set(pulse * 1.5, pulse * 1.5, pulse * 1.5);
+
       renderer.render(scene, camera);
     }
 
