@@ -41,17 +41,22 @@
   </div>
 
   <!-- THREE.JS -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.js"></script>
+
+<!-- POSTPROCESADO -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/EffectComposer.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/RenderPass.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/UnrealBloomPass.js"></script>
+
 
 
 
   <script>
     // ESCENA
     const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x000000);
+
 
     // CÁMARA
     const camera = new THREE.PerspectiveCamera(
@@ -70,7 +75,9 @@ renderer.toneMappingExposure = 1.5;
     renderer.setPixelRatio(window.devicePixelRatio);
     document.body.appendChild(renderer.domElement);
     // 🎬 POSTPROCESADO CINEMATOGRÁFICO
-const composer = new THREE.EffectComposer(renderer);
+    const composer = new THREE.EffectComposer(renderer);
+    composer.setSize(window.innerWidth, window.innerHeight);
+
 
 const renderPass = new THREE.RenderPass(scene, camera);
 composer.addPass(renderPass);
@@ -217,11 +224,15 @@ composer.render();
     animate();
 
     // RESPONSIVE
+    
     window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  composer.setSize(window.innerWidth, window.innerHeight);
+});
+
   </script>
 </body>
 </html>
