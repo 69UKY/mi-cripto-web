@@ -2,15 +2,16 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Mi Criptomoneda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+  <title>Mi Criptomoneda</title>
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
       overflow: hidden;
-      background: radial-gradient(circle at center, #05010a 0%, #000000 70%);
-      font-family: Arial, sans-serif;
+      background: black;
+      font-family: Arial, Helvetica, sans-serif;
+      color: white;
     }
 
     #ui {
@@ -18,106 +19,112 @@
       top: 20px;
       width: 100%;
       text-align: center;
-      color: white;
       z-index: 10;
+      pointer-events: none;
     }
 
     #ui h1 {
-      font-size: 32px;
+      letter-spacing: 4px;
       margin: 0;
-      letter-spacing: 3px;
     }
 
     #ui p {
       opacity: 0.7;
-      margin-top: 5px;
+      margin-top: 6px;
     }
   </style>
 </head>
-
 <body>
   <div id="ui">
     <h1>MI CRIPTOMONEDA</h1>
     <p>Una galaxia financiera en expansión</p>
   </div>
 
+  <!-- THREE.JS -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.js"></script>
 
-
   <script>
+    // ESCENA
     const scene = new THREE.Scene();
 
+    // CÁMARA
     const camera = new THREE.PerspectiveCamera(
       60,
       window.innerWidth / window.innerHeight,
       0.1,
-      1000
+      2000
     );
-    camera.position.z = 12;
+    camera.position.set(0, 6, 18);
 
+    // RENDER
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.05;
-
-controls.enableZoom = true;
-controls.minDistance = 4;
-controls.maxDistance = 25;
-
-controls.enablePan = false;
-
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     document.body.appendChild(renderer.domElement);
 
-    // 🌌 GALAXIA
+    // CONTROLES (ZOOM + ROTACIÓN CON RATÓN)
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.enableZoom = true;
+    controls.minDistance = 6;
+    controls.maxDistance = 60;
+    controls.enablePan = false;
+
+    // LUCES SUAVES
+    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+
+    const pointLight = new THREE.PointLight(0x88aaff, 2, 300);
+    pointLight.position.set(10, 15, 10);
+    scene.add(pointLight);
+
+    // ======================
+    // GALAXIA ESPIRAL REALISTA
+    // ======================
+
     const galaxyGeometry = new THREE.BufferGeometry();
 
-    const starCount = 20000;
-    const positions = [];
-    const colors = [];
+    const starCount = 120000;
+    const positions = new Float32Array(starCount * 3);
+    const colors = new Float32Array(starCount * 3);
 
-    const colorInside = new THREE.Color(0xffffff);
-    const colorOutside = new THREE.Color(0x4b0082);
+    const insideColor = new THREE.Color(0xffffff);
+    const outsideColor = new THREE.Color(0x3a66ff);
 
-    const radius = 6;
+    const radius = 40;
     const branches = 4;
-    const spin = 1;
-    const randomness = 0.8;
+    const spin = 1.2;
+    const randomness = 0.6;
 
     for (let i = 0; i < starCount; i++) {
+      const i3 = i * 3;
+
       const r = Math.random() * radius;
       const branchAngle = (i % branches) / branches * Math.PI * 2;
       const spinAngle = r * spin;
 
-      const randomX = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * randomness;
-      const randomY = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * randomness;
-      const randomZ = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * randomness;
+      const randomX = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * randomness * r;
+      const randomY = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * randomness * 0.3 * r;
+      const randomZ = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * randomness * r;
 
-      const x = Math.cos(branchAngle + spinAngle) * r + randomX;
-      const y = randomY * 0.5;
-      const z = Math.sin(branchAngle + spinAngle) * r + randomZ;
+      positions[i3] = Math.cos(branchAngle + spinAngle) * r + randomX;
+      positions[i3 + 1] = randomY;
+      positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * r + randomZ;
 
-      positions.push(x, y, z);
+      const mixedColor = insideColor.clone();
+      mixedColor.lerp(outsideColor, r / radius);
 
-      const mixedColor = colorInside.clone();
-      mixedColor.lerp(colorOutside, r / radius);
-      colors.push(mixedColor.r, mixedColor.g, mixedColor.b);
+      colors[i3] = mixedColor.r;
+      colors[i3 + 1] = mixedColor.g;
+      colors[i3 + 2] = mixedColor.b;
     }
 
-    galaxyGeometry.setAttribute(
-      'position',
-      new THREE.Float32BufferAttribute(positions, 3)
-    );
-
-    galaxyGeometry.setAttribute(
-      'color',
-      new THREE.Float32BufferAttribute(colors, 3)
-    );
+    galaxyGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    galaxyGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
     const galaxyMaterial = new THREE.PointsMaterial({
-      size: 0.03,
+      size: 0.035,
       sizeAttenuation: true,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
@@ -127,43 +134,31 @@ controls.enablePan = false;
     const galaxy = new THREE.Points(galaxyGeometry, galaxyMaterial);
     scene.add(galaxy);
 
-    // 🌟 LUCES SUAVES
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
-    scene.add(ambientLight);
+    // ESTRELLAS DE FONDO
+    const bgGeometry = new THREE.BufferGeometry();
+    const bgCount = 8000;
+    const bgPositions = new Float32Array(bgCount * 3);
 
-    // 🌌 ESTRELLAS DE FONDO
-    const backgroundStarsGeometry = new THREE.BufferGeometry();
-    const bgStars = 3000;
-    const bgPositions = [];
-
-    for (let i = 0; i < bgStars; i++) {
-      bgPositions.push(
-        (Math.random() - 0.5) * 300,
-        (Math.random() - 0.5) * 300,
-        (Math.random() - 0.5) * 300
-      );
+    for (let i = 0; i < bgCount * 3; i++) {
+      bgPositions[i] = (Math.random() - 0.5) * 600;
     }
 
-    backgroundStarsGeometry.setAttribute(
-      'position',
-      new THREE.Float32BufferAttribute(bgPositions, 3)
-    );
+    bgGeometry.setAttribute('position', new THREE.BufferAttribute(bgPositions, 3));
 
-    const backgroundStarsMaterial = new THREE.PointsMaterial({
+    const bgMaterial = new THREE.PointsMaterial({
       color: 0xffffff,
       size: 0.6
     });
 
-    const backgroundStars = new THREE.Points(backgroundStarsGeometry, backgroundStarsMaterial);
+    const backgroundStars = new THREE.Points(bgGeometry, bgMaterial);
     scene.add(backgroundStars);
 
-    // 🎥 ANIMACIÓN
+    // ANIMACIÓN
     function animate() {
       requestAnimationFrame(animate);
 
-      galaxy.rotation.y += 0.0006;
-      galaxy.rotation.z += 0.0003;
-
+      galaxy.rotation.y += 0.0005;
+      galaxy.rotation.z += 0.0002;
       backgroundStars.rotation.y += 0.0001;
 
       controls.update();
@@ -172,7 +167,8 @@ controls.enablePan = false;
 
     animate();
 
-    window.addEventListener("resize", () => {
+    // RESPONSIVE
+    window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
