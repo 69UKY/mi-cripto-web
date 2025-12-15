@@ -42,13 +42,10 @@
     <p>Una galaxia financiera en expansión</p>
   </div>
 
-  <!-- THREE.JS CON MODULES (OBLIGATORIO EN GITHUB PAGES) -->
+  <!-- THREE.JS CON MODULES -->
   <script type="module">
     import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js";
     import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/controls/OrbitControls.js";
-    import { EffectComposer } from "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/postprocessing/EffectComposer.js";
-    import { RenderPass } from "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/postprocessing/RenderPass.js";
-    import { UnrealBloomPass } from "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/postprocessing/UnrealBloomPass.js";
 
     // ESCENA
     const scene = new THREE.Scene();
@@ -67,21 +64,7 @@
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.toneMapping = THREE.ReinhardToneMapping;
-    renderer.toneMappingExposure = 1.5;
     document.body.appendChild(renderer.domElement);
-
-    // POSTPROCESADO CINEMATOGRÁFICO
-    const composer = new EffectComposer(renderer);
-    composer.addPass(new RenderPass(scene, camera));
-
-    const bloomPass = new UnrealBloomPass(
-      new THREE.Vector2(window.innerWidth, window.innerHeight),
-      1.6,
-      0.4,
-      0.1
-    );
-    composer.addPass(bloomPass);
 
     // CONTROLES
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -92,6 +75,7 @@
 
     // LUCES
     scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+
     const pointLight = new THREE.PointLight(0x88aaff, 2, 300);
     pointLight.position.set(10, 15, 10);
     scene.add(pointLight);
@@ -146,13 +130,13 @@
     const galaxy = new THREE.Points(galaxyGeometry, galaxyMaterial);
     scene.add(galaxy);
 
-    // NÚCLEO BRILLANTE
+    // NÚCLEO GALÁCTICO
     const core = new THREE.Mesh(
       new THREE.SphereGeometry(0.6, 32, 32),
       new THREE.MeshStandardMaterial({
         color: 0xffffff,
         emissive: 0x88ccff,
-        emissiveIntensity: 3
+        emissiveIntensity: 2
       })
     );
     scene.add(core);
@@ -175,6 +159,7 @@
       bgPositions[i] = (Math.random() - 0.5) * 600;
     }
     bgGeometry.setAttribute("position", new THREE.BufferAttribute(bgPositions, 3));
+
     scene.add(new THREE.Points(
       bgGeometry,
       new THREE.PointsMaterial({ color: 0xffffff, size: 0.6 })
@@ -192,7 +177,7 @@
       glow.scale.setScalar(pulse * 1.5);
 
       controls.update();
-      composer.render();
+      renderer.render(scene, camera);
     }
     animate();
 
@@ -201,7 +186,6 @@
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
-      composer.setSize(window.innerWidth, window.innerHeight);
     });
   </script>
 </body>
