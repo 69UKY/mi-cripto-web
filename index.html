@@ -43,6 +43,10 @@
   <!-- THREE.JS -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/UnrealBloomPass.js"></script>
+
 
 
   <script>
@@ -60,9 +64,26 @@
 
     // RENDER
     const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.toneMapping = THREE.ReinhardToneMapping;
+renderer.toneMappingExposure = 1.5;
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     document.body.appendChild(renderer.domElement);
+    // 🎬 POSTPROCESADO CINEMATOGRÁFICO
+const composer = new THREE.EffectComposer(renderer);
+
+const renderPass = new THREE.RenderPass(scene, camera);
+composer.addPass(renderPass);
+
+const bloomPass = new THREE.UnrealBloomPass(
+  new THREE.Vector2(window.innerWidth, window.innerHeight),
+  1.6,   // strength 🔥
+  0.4,   // radius
+  0.1    // threshold
+);
+
+composer.addPass(bloomPass);
+
 
     // CONTROLES (ZOOM + ROTACIÓN CON RATÓN)
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -137,11 +158,12 @@
     // 🌟 NÚCLEO GALÁCTICO
     const coreGeometry = new THREE.SphereGeometry(0.6, 32, 32);
 
-    const coreMaterial = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.9
-    });
+    const coreMaterial = new THREE.MeshStandardMaterial({
+  color: 0xffffff,
+  emissive: 0x88ccff,
+  emissiveIntensity: 3,
+});
+
 
     const core = new THREE.Mesh(coreGeometry, coreMaterial);
     scene.add(core);
@@ -189,7 +211,7 @@
 core.scale.set(pulse, pulse, pulse);
 glow.scale.set(pulse * 1.5, pulse * 1.5, pulse * 1.5);
 
-      renderer.render(scene, camera);
+composer.render();
     }
 
     animate();
