@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mi Criptomoneda</title>
+
   <style>
     html, body {
       margin: 0;
@@ -34,6 +35,7 @@
     }
   </style>
 </head>
+
 <body>
   <div id="ui">
     <h1>MI CRIPTOMONEDA</h1>
@@ -41,22 +43,18 @@
   </div>
 
   <!-- THREE.JS -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.js"></script>
 
-<!-- POSTPROCESADO -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/EffectComposer.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/RenderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/UnrealBloomPass.js"></script>
-
-
-
+  <!-- POSTPROCESADO -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/EffectComposer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/RenderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/UnrealBloomPass.js"></script>
 
   <script>
     // ESCENA
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x000000);
-
 
     // CÁMARA
     const camera = new THREE.PerspectiveCamera(
@@ -65,61 +63,52 @@
       0.1,
       2000
     );
-    camera.position.set(0, 6, 18);
+    camera.position.set(0, 6, 22);
 
     // RENDER
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.toneMapping = THREE.ReinhardToneMapping;
-renderer.toneMappingExposure = 1.5;
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.toneMapping = THREE.ReinhardToneMapping;
+    renderer.toneMappingExposure = 2.2;
+    renderer.autoClear = false; // 🔥 CLAVE
     document.body.appendChild(renderer.domElement);
-    // 🎬 POSTPROCESADO CINEMATOGRÁFICO
+
+    // POSTPROCESADO
     const composer = new THREE.EffectComposer(renderer);
-    composer.setSize(window.innerWidth, window.innerHeight);
+    composer.addPass(new THREE.RenderPass(scene, camera));
 
+    const bloomPass = new THREE.UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      2.2,   // strength 🔥
+      0.6,   // radius
+      0.0    // threshold
+    );
+    composer.addPass(bloomPass);
 
-const renderPass = new THREE.RenderPass(scene, camera);
-composer.addPass(renderPass);
-
-const bloomPass = new THREE.UnrealBloomPass(
-  new THREE.Vector2(window.innerWidth, window.innerHeight),
-  1.6,   // strength 🔥
-  0.4,   // radius
-  0.1    // threshold
-);
-
-composer.addPass(bloomPass);
-
-
-    // CONTROLES (ZOOM + ROTACIÓN CON RATÓN)
+    // CONTROLES
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.enableZoom = true;
     controls.minDistance = 6;
-    controls.maxDistance = 60;
+    controls.maxDistance = 80;
     controls.enablePan = false;
 
-    // LUCES SUAVES
-    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-
-    const pointLight = new THREE.PointLight(0x88aaff, 2, 300);
-    pointLight.position.set(10, 15, 10);
-    scene.add(pointLight);
+    // LUZ AMBIENTE
+    scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
     // ======================
-    // GALAXIA ESPIRAL REALISTA
+    // GALAXIA ESPIRAL
     // ======================
-
     const galaxyGeometry = new THREE.BufferGeometry();
-
     const starCount = 120000;
+
     const positions = new Float32Array(starCount * 3);
     const colors = new Float32Array(starCount * 3);
 
     const insideColor = new THREE.Color(0xffffff);
-    const outsideColor = new THREE.Color(0x3a66ff);
+    const outsideColor = new THREE.Color(0x3366ff);
 
     const radius = 40;
     const branches = 4;
@@ -128,7 +117,6 @@ composer.addPass(bloomPass);
 
     for (let i = 0; i < starCount; i++) {
       const i3 = i * 3;
-
       const r = Math.random() * radius;
       const branchAngle = (i % branches) / branches * Math.PI * 2;
       const spinAngle = r * spin;
@@ -153,8 +141,7 @@ composer.addPass(bloomPass);
     galaxyGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
     const galaxyMaterial = new THREE.PointsMaterial({
-      size: 0.035,
-      sizeAttenuation: true,
+      size: 0.04,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       vertexColors: true
@@ -162,28 +149,27 @@ composer.addPass(bloomPass);
 
     const galaxy = new THREE.Points(galaxyGeometry, galaxyMaterial);
     scene.add(galaxy);
-    // 🌟 NÚCLEO GALÁCTICO
-    const coreGeometry = new THREE.SphereGeometry(0.6, 32, 32);
 
-    const coreMaterial = new THREE.MeshStandardMaterial({
-  color: 0xffffff,
-  emissive: 0x88ccff,
-  emissiveIntensity: 3,
-});
-
-
-    const core = new THREE.Mesh(coreGeometry, coreMaterial);
+    // NÚCLEO
+    const core = new THREE.Mesh(
+      new THREE.SphereGeometry(0.8, 32, 32),
+      new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        emissive: 0x88ccff,
+        emissiveIntensity: 6
+      })
+    );
     scene.add(core);
 
-    // ✨ HALO BRILLANTE
-    const glowGeometry = new THREE.SphereGeometry(1.4, 32, 32);
-    const glowMaterial = new THREE.MeshBasicMaterial({
-      color: 0x88ccff,
-      transparent: true,
-      opacity: 0.25
-    });
-
-    const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+    // HALO
+    const glow = new THREE.Mesh(
+      new THREE.SphereGeometry(2.2, 32, 32),
+      new THREE.MeshBasicMaterial({
+        color: 0x88ccff,
+        transparent: true,
+        opacity: 0.35
+      })
+    );
     scene.add(glow);
 
     // ESTRELLAS DE FONDO
@@ -196,13 +182,10 @@ composer.addPass(bloomPass);
     }
 
     bgGeometry.setAttribute('position', new THREE.BufferAttribute(bgPositions, 3));
-
-    const bgMaterial = new THREE.PointsMaterial({
-      color: 0xffffff,
-      size: 0.6
-    });
-
-    const backgroundStars = new THREE.Points(bgGeometry, bgMaterial);
+    const backgroundStars = new THREE.Points(
+      bgGeometry,
+      new THREE.PointsMaterial({ color: 0xffffff, size: 0.7 })
+    );
     scene.add(backgroundStars);
 
     // ANIMACIÓN
@@ -213,26 +196,23 @@ composer.addPass(bloomPass);
       galaxy.rotation.z += 0.0002;
       backgroundStars.rotation.y += 0.0001;
 
-      controls.update();
-      const pulse = 0.5 + Math.sin(Date.now() * 0.002) * 0.1;
-core.scale.set(pulse, pulse, pulse);
-glow.scale.set(pulse * 1.5, pulse * 1.5, pulse * 1.5);
+      const pulse = 1 + Math.sin(Date.now() * 0.002) * 0.15;
+      core.scale.set(pulse, pulse, pulse);
+      glow.scale.set(pulse * 1.4, pulse * 1.4, pulse * 1.4);
 
-composer.render();
+      controls.update();
+      composer.render();
     }
 
     animate();
 
     // RESPONSIVE
-    
     window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  composer.setSize(window.innerWidth, window.innerHeight);
-});
-
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      composer.setSize(window.innerWidth, window.innerHeight);
+    });
   </script>
 </body>
 </html>
