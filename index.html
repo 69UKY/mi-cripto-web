@@ -181,10 +181,6 @@ html, body {
 </div>
 
 
-<div id="cta">
-  <a href="#" class="btn">BUY TOKEN</a>
-  <a href="#" class="btn ghost">WHITEPAPER</a>
-</div>
 
 <!-- ABOUT -->
 <div id="aboutPanel" class="panel">
@@ -565,9 +561,17 @@ roadmap.userData = {
   delay: Math.random() * 0.6
 };
 
+const buyToken = textSprite("BUY TOKEN");
+buyToken.position.set(-8,-2,5);
+scene.add(buyToken);
+
+const whitepaper = textSprite("WHITE PAPER");
+whitepaper.position.set(6,-1,8);
+scene.add(whitepaper);
 
 
-const clickable=[roadmap,tokenomics,about,utility,security];
+const clickable=[roadmap,tokenomics,about,utility,security,buyToken,
+  whitepaper];
 
 /* INTERACCIÓN */
 const ray=new THREE.Raycaster();
@@ -585,6 +589,14 @@ window.addEventListener("click",()=>{
   if(hovered===about) openPanel("aboutPanel");
   if(hovered===utility) openPanel("utilityPanel");
   if(hovered===security) openPanel("securityPanel");
+  if (hovered === buyToken) {
+    window.open("https://TU_LINK_DE_COMPRA", "_blank");
+  }
+
+  if (hovered === whitepaper) {
+    window.open("whitepaper.pdf", "_blank");
+  }
+
 });
 
 function openPanel(id){
@@ -659,7 +671,10 @@ function animateEntry(sprite, speed = 0.04) {
 }
 
 
-animate();
+animate();clickable.forEach(card => {
+  card.lookAt(camera.position);
+});
+
 
 
 window.addEventListener("resize",()=>{
