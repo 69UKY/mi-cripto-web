@@ -1,210 +1,397 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mi Criptomoneda</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background: black;
-      font-family: Arial, Helvetica, sans-serif;
-      color: white;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Criptomoneda</title>
 
-    #ui {
-      position: absolute;
-      top: 20px;
-      width: 100%;
-      text-align: center;
-      z-index: 10;
-      pointer-events: none;
-    }
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: black;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+}
 
-    #ui h1 {
-      letter-spacing: 4px;
-      margin: 0;
-    }
+/* UI SUPERIOR */
+#ui {
+  position: absolute;
+  top: 20px;
+  width: 100%;
+  text-align: center;
+  z-index: 10;
+  pointer-events: none;
+}
 
-    #ui p {
-      opacity: 0.7;
-      margin-top: 6px;
-    }
-  </style>
+/* CTA */
+#cta{
+  position: absolute;
+  bottom: 40px;
+  width: 100%;
+  text-align: center;
+  z-index: 10;
+}
+
+.btn{
+  display: inline-block;
+  margin: 0 10px;
+  padding: 14px 30px;
+  border: 2px solid white;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  transition: .3s;
+}
+
+.btn:hover{
+  background:white;
+  color:black;
+}
+
+.btn.ghost{
+  opacity:.7;
+}
+
+/* PANEL HTML */
+.panel {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.95);
+  display: none;
+  z-index: 20;
+  padding: 60px 10%;
+  overflow-y: auto;
+}
+
+.panel h2 {
+  font-size: 42px;
+  margin-bottom: 20px;
+}
+
+.panel p, .panel li {
+  font-size: 18px;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 28px;
+  cursor: pointer;
+}
+</style>
 </head>
+
 <body>
-  <div id="ui">
-    <h1>MI CRIPTOMONEDA</h1>
-    <p>Una galaxia financiera en expansión</p>
-  </div>
 
-  <!-- THREE.JS -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<div id="ui">
+  <h1>MI CRIPTOMONEDA</h1>
+  <p>Una galaxia financiera en expansión</p>
+</div>
+
+<div id="cta">
+  <a href="#" class="btn">BUY TOKEN</a>
+  <a href="#" class="btn ghost">WHITEPAPER</a>
+</div>
+
+<!-- ABOUT -->
+<div id="aboutPanel" class="panel">
+  <div class="close" onclick="closePanels()">✖</div>
+  <h2>🌌 ABOUT</h2>
+  <p>
+    MI CRIPTOMONEDA is a decentralized digital asset designed to power
+    a next-generation financial ecosystem focused on transparency,
+    scalability and community-driven growth.
+  </p>
+</div>
+
+<!-- UTILITY -->
+<div id="utilityPanel" class="panel">
+  <div class="close" onclick="closePanels()">✖</div>
+  <h2>⚙️ TOKEN UTILITY</h2>
+  <ul>
+    <li>💎 Governance & voting rights</li>
+    <li>🔥 Deflationary mechanics</li>
+    <li>🏦 Staking rewards</li>
+    <li>🪙 Ecosystem payments</li>
+    <li>🚀 Future DeFi integrations</li>
+  </ul>
+</div>
+
+<!-- SECURITY -->
+<div id="securityPanel" class="panel">
+  <div class="close" onclick="closePanels()">✖</div>
+  <h2>🔐 SECURITY</h2>
+  <ul>
+    <li>✅ Verified Smart Contract</li>
+    <li>🔒 Liquidity Lock</li>
+    <li>🛡️ Anti-bot protection</li>
+    <li>📜 Public contract address</li>
+  </ul>
+</div>
+
+<!-- TOKENOMICS -->
+<div id="tokenomicsPanel" class="panel">
+  <div class="close" onclick="closePanels()">✖</div>
+  <h2>📊 TOKENOMICS</h2>
+  <ul>
+    <li>🔥 40% Liquidez</li>
+    <li>🚀 25% Desarrollo</li>
+    <li>🎯 20% Marketing</li>
+    <li>🏦 10% Staking</li>
+    <li>👥 5% Equipo</li>
+  </ul>
+</div>
+
+<!-- ROADMAP -->
+<div id="roadmapPanel" class="panel">
+  <div class="close" onclick="closePanels()">✖</div>
+  <h2>🛣️ ROADMAP</h2>
+  <ul>
+    <li>✅ Phase 1 – Token Launch</li>
+    <li>✅ Phase 2 – Website & Community</li>
+    <li>🚧 Phase 3 – Exchange Listings</li>
+    <li>🔜 Phase 4 – Staking & NFT</li>
+    <li>🌌 Phase 5 – Full Ecosystem</li>
+  </ul>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/EffectComposer.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/RenderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/UnrealBloomPass.js"></script>
 
+<script>
+/* ESCENA */
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 2000);
+camera.position.set(0,6,18);
 
-  <script>
-    // ESCENA
-    const scene = new THREE.Scene();
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(devicePixelRatio);
+document.body.appendChild(renderer.domElement);
 
-    // CÁMARA
-    const camera = new THREE.PerspectiveCamera(
-      60,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      2000
-    );
-    camera.position.set(0, 6, 18);
+/* CONTROLES */
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.enablePan = false;
 
-    // RENDER
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.toneMapping = THREE.ReinhardToneMapping;
-renderer.toneMappingExposure = 1.5;
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    document.body.appendChild(renderer.domElement);
+/* LUCES */
+scene.add(new THREE.AmbientLight(0xffffff,0.6));
+const light = new THREE.PointLight(0x88aaff,2,300);
+light.position.set(10,15,10);
+scene.add(light);
 
-    // CONTROLES (ZOOM + ROTACIÓN CON RATÓN)
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.enableZoom = true;
-    controls.minDistance = 6;
-    controls.maxDistance = 60;
-    controls.enablePan = false;
+/* GALAXIA */
+const galaxyGeometry = new THREE.BufferGeometry();
+const starCount = 120000;
+const positions = new Float32Array(starCount * 3);
+const colors = new Float32Array(starCount * 3);
 
-    // LUCES SUAVES
-    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+const insideColor = new THREE.Color(0xffffff);
+const outsideColor = new THREE.Color(0x3a66ff);
 
-    const pointLight = new THREE.PointLight(0x88aaff, 2, 300);
-    pointLight.position.set(10, 15, 10);
-    scene.add(pointLight);
+const radius = 40;
+const randomness = 0.6;
 
-    // ======================
-    // GALAXIA ESPIRAL REALISTA
-    // ======================
+for (let i = 0; i < starCount; i++) {
+  const i3 = i * 3;
+  const r = Math.random() * radius;
 
-    const galaxyGeometry = new THREE.BufferGeometry();
+  positions[i3] = (Math.random()-0.5)*r*2;
+  positions[i3+1] = (Math.random()-0.5)*r*0.5;
+  positions[i3+2] = (Math.random()-0.5)*r*2;
 
-    const starCount = 120000;
-    const positions = new Float32Array(starCount * 3);
-    const colors = new Float32Array(starCount * 3);
+  const mixed = insideColor.clone().lerp(outsideColor, r/radius);
+  colors[i3]=mixed.r; colors[i3+1]=mixed.g; colors[i3+2]=mixed.b;
+}
 
-    const insideColor = new THREE.Color(0xffffff);
-    const outsideColor = new THREE.Color(0x3a66ff);
+galaxyGeometry.setAttribute('position', new THREE.BufferAttribute(positions,3));
+galaxyGeometry.setAttribute('color', new THREE.BufferAttribute(colors,3));
 
-    const radius = 40;
-    const branches = 4;
-    const spin = 1.2;
-    const randomness = 0.6;
-
-    for (let i = 0; i < starCount; i++) {
-      const i3 = i * 3;
-
-      const r = Math.random() * radius;
-      const branchAngle = (i % branches) / branches * Math.PI * 2;
-      const spinAngle = r * spin;
-
-      const randomX = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * randomness * r;
-      const randomY = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * randomness * 0.3 * r;
-      const randomZ = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * randomness * r;
-
-      positions[i3] = Math.cos(branchAngle + spinAngle) * r + randomX;
-      positions[i3 + 1] = randomY;
-      positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * r + randomZ;
-
-      const mixedColor = insideColor.clone();
-      mixedColor.lerp(outsideColor, r / radius);
-
-      colors[i3] = mixedColor.r;
-      colors[i3 + 1] = mixedColor.g;
-      colors[i3 + 2] = mixedColor.b;
-    }
-
-    galaxyGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    galaxyGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-    const galaxyMaterial = new THREE.PointsMaterial({
-      size: 0.035,
-      sizeAttenuation: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      vertexColors: true
-    });
-
-    const galaxy = new THREE.Points(galaxyGeometry, galaxyMaterial);
-    scene.add(galaxy);
-// 🌟 NÚCLEO GALÁCTICO
-const coreGeometry = new THREE.SphereGeometry(0.6, 32, 32);
-
-const coreMaterial = new THREE.MeshStandardMaterial({
-  color: 0xffffff,
-  emissive: 0x88ccff,
-  emissiveIntensity: 3,
+const galaxyMaterial = new THREE.PointsMaterial({
+  size:0.035,
+  blending:THREE.AdditiveBlending,
+  depthWrite:false,
+  vertexColors:true
 });
 
+const galaxy = new THREE.Points(galaxyGeometry, galaxyMaterial);
+scene.add(galaxy);
 
-const core = new THREE.Mesh(coreGeometry, coreMaterial);
-scene.add(core);
+/* TEXTO CRISTAL 3D */
+function textSprite(t){
+  const c = document.createElement("canvas");
+  c.width = 512;
+  c.height = 160;
+  const ctx = c.getContext("2d");
 
-// ✨ HALO BRILLANTE
-const glowGeometry = new THREE.SphereGeometry(1.4, 32, 32);
-const glowMaterial = new THREE.MeshBasicMaterial({
-  color: 0x88ccff,
-  transparent: true,
-  opacity: 0.25
+  // Fondo cristal (glass)
+  const gradient = ctx.createLinearGradient(0, 0, 512, 160);
+  gradient.addColorStop(0, "rgba(255,255,255,0.08)");
+  gradient.addColorStop(1, "rgba(255,255,255,0.02)");
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, 512, 160);
+
+  // Borde luminoso
+  ctx.strokeStyle = "rgba(180,220,255,0.6)";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(8, 8, 496, 144);
+
+  // Glow
+  ctx.shadowColor = "rgba(120,180,255,0.8)";
+  ctx.shadowBlur = 20;
+
+  // Texto
+  ctx.fillStyle = "white";
+  ctx.font = "bold 48px Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(t, 256, 80);
+
+  const texture = new THREE.CanvasTexture(c);
+  texture.minFilter = THREE.LinearFilter;
+
+  const material = new THREE.SpriteMaterial({
+    map: texture,
+    transparent: true,
+    opacity: 0.95
+  });
+
+  const sprite = new THREE.Sprite(material);
+  sprite.scale.set(6.5, 2, 1);
+
+  return sprite;
+}
+
+
+const roadmap=textSprite("ROADMAP");
+roadmap.position.set(-10,2,0);
+scene.add(roadmap);
+roadmap.userData = {
+  appear: 0,
+  delay: Math.random() * 0.6
+};
+roadmap.material.opacity = 0;
+roadmap.scale.set(0.01, 0.01, 0.01);
+
+const tokenomics=textSprite("TOKENOMICS");
+tokenomics.position.set(10,2,0);
+scene.add(tokenomics);
+roadmap.userData = {
+  appear: 0,
+  delay: Math.random() * 0.6
+};
+roadmap.material.opacity = 0;
+roadmap.scale.set(0.01, 0.01, 0.01);
+
+const about=textSprite("ABOUT");
+about.position.set(0,4,-6);
+scene.add(about);
+roadmap.userData = {
+  appear: 0,
+  delay: Math.random() * 0.6
+};
+roadmap.material.opacity = 0;
+roadmap.scale.set(0.01, 0.01, 0.01);
+
+const utility=textSprite("UTILITY");
+utility.position.set(-6,1,-8);
+scene.add(utility);
+roadmap.userData = {
+  appear: 0,
+  delay: Math.random() * 0.6
+};
+roadmap.material.opacity = 0;
+roadmap.scale.set(0.01, 0.01, 0.01);
+
+const security=textSprite("SECURITY");
+security.position.set(6,1,-8);
+scene.add(security);
+roadmap.userData = {
+  appear: 0,
+  delay: Math.random() * 0.6
+};
+roadmap.material.opacity = 0;
+roadmap.scale.set(0.01, 0.01, 0.01);
+
+const clickable=[roadmap,tokenomics,about,utility,security];
+
+/* INTERACCIÓN */
+const ray=new THREE.Raycaster();
+const mouse=new THREE.Vector2();
+let hovered=null;
+
+window.addEventListener("mousemove",e=>{
+  mouse.x=e.clientX/innerWidth*2-1;
+  mouse.y=-(e.clientY/innerHeight)*2+1;
 });
 
-const glow = new THREE.Mesh(glowGeometry, glowMaterial);
-scene.add(glow);
+window.addEventListener("click",()=>{
+  if(hovered===roadmap) openPanel("roadmapPanel");
+  if(hovered===tokenomics) openPanel("tokenomicsPanel");
+  if(hovered===about) openPanel("aboutPanel");
+  if(hovered===utility) openPanel("utilityPanel");
+  if(hovered===security) openPanel("securityPanel");
+});
 
-    // ESTRELLAS DE FONDO
-    const bgGeometry = new THREE.BufferGeometry();
-    const bgCount = 8000;
-    const bgPositions = new Float32Array(bgCount * 3);
+function openPanel(id){
+  document.getElementById(id).style.display="block";
+}
+function closePanels(){
+  document.querySelectorAll(".panel").forEach(p=>p.style.display="none");
+}
 
-    for (let i = 0; i < bgCount * 3; i++) {
-      bgPositions[i] = (Math.random() - 0.5) * 600;
+/* ANIMACIÓN */
+function animate(){
+  requestAnimationFrame(animate);
+  galaxy.rotation.y+=0.0004;
+
+  ray.setFromCamera(mouse,camera);
+  const hit=ray.intersectObjects(clickable);
+
+  clickable.forEach(o=>o.scale.set(6,1.5,1));
+  hovered=null;
+
+  if(hit.length){
+    hovered=hit[0].object;
+    hovered.scale.set(6.8,1.7,1);
+  }
+  clickable.forEach(card => animateEntry(card));
+  clickable.forEach(o=>o.lookAt(camera.position));
+  controls.update();
+  renderer.render(scene,camera);
+}
+function animateEntry(sprite, speed = 0.04) {
+  if (sprite.userData.appear < 1) {
+    sprite.userData.appear += speed;
+
+    const t = Math.min(sprite.userData.appear - sprite.userData.delay, 1);
+    if (t > 0) {
+      const eased = 1 - Math.pow(1 - t, 3); // ease-out
+
+      sprite.scale.set(
+        6.5 * eased,
+        2 * eased,
+        1
+      );
+
+      sprite.material.opacity = eased;
     }
+  }
+}
 
-    bgGeometry.setAttribute('position', new THREE.BufferAttribute(bgPositions, 3));
+animate();
 
-    const bgMaterial = new THREE.PointsMaterial({
-      color: 0xffffff,
-      size: 0.6
-    });
-
-    const backgroundStars = new THREE.Points(bgGeometry, bgMaterial);
-    scene.add(backgroundStars);
-
-    // ANIMACIÓN
-    function animate() {
-      requestAnimationFrame(animate);
-
-      galaxy.rotation.y += 0.0005;
-      galaxy.rotation.z += 0.0002;
-      backgroundStars.rotation.y += 0.0001;
-
-      controls.update();
-      const pulse = 0.5 + Math.sin(Date.now() * 0.002) * 0.1;
-core.scale.set(pulse, pulse, pulse);
-glow.scale.set(pulse * 1.5, pulse * 1.5, pulse * 1.5);
-      renderer.render(scene, camera);
-    }
-
-    animate();
-
-    // RESPONSIVE
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-  </script>
+window.addEventListener("resize",()=>{
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+});
+</script>
 </body>
 </html>
